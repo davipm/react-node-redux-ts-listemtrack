@@ -14,6 +14,7 @@ import {
   KeyboardDatePicker,
 } from "@material-ui/pickers";
 import Alert from "@material-ui/lab/Alert";
+import ClearIcon from '@material-ui/icons/Clear';
 import api from "../../services/api";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -78,12 +79,12 @@ function ExerciseCreate() {
     getUser();
   }, []);
 
-  const onHandleChange = (event: any) => {
+  const onHandleChange = (event: { target: { name?: string | undefined; value: any; }; }): void => {
     const { name, value } = event.target;
-    setUserInput({ [name]: value });
+    setUserInput({ [name!]: value });
   };
 
-  const onSubmit = async (event: any) => {
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault();
     if (!userInput.description || !userInput.username || !userInput.duration) {
       setError(true);
@@ -93,6 +94,13 @@ function ExerciseCreate() {
     await api.post("/exercise", userInput);
     history.push("/");
   };
+
+  const onReset = () => {
+    setUserInput({ username: "",
+      description: "",
+      duration: "",
+      date: selectedDate, });
+  }
 
   return (
     <section>
@@ -177,9 +185,10 @@ function ExerciseCreate() {
         <Button
           className={classes.button}
           variant="contained"
-          color="primary"
+          color="secondary"
           type="reset"
-          startIcon={<SaveIcon />}
+          onClick={onReset}
+          startIcon={<ClearIcon />}
         >
           Reset
         </Button>

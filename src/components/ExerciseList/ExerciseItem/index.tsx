@@ -5,6 +5,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Button from "@material-ui/core/Button";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
+import moment from "moment";
 import { IExercise } from "../index";
 
 function ExerciseItem({
@@ -22,7 +23,7 @@ function ExerciseItem({
       </TableCell>
       <TableCell align="right">{description}</TableCell>
       <TableCell align="right">{duration}</TableCell>
-      <TableCell align="right">{date}</TableCell>
+      <TableCell align="right">{moment(date).format('DD/MM/YYYY')}</TableCell>
       <TableCell align="right">
         <Button
           className="mr-2"
