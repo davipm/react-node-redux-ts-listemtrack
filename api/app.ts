@@ -1,6 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
+import * as dotenv from 'dotenv';
 
 import exerciseRoute from "./routes/exercises";
 import userRouter from "./routes/users";
@@ -9,6 +10,7 @@ class App {
   public express: express.Application;
 
   public constructor() {
+    dotenv.config({ path: './config.env' });
     this.express = express();
     this.middleware();
     this.database();
@@ -24,7 +26,7 @@ class App {
   private database(): void {
     mongoose
       .connect(
-        "mongodb://davipereira:607616davi@ds049467.mlab.com:49467/davimern",
+        `${process.env.MONGO_DB}`,
         {
           useNewUrlParser: true,
           useUnifiedTopology: true,
