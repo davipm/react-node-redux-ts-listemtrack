@@ -31,11 +31,11 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-interface IUser {
+export interface IUser {
   username: string;
 }
 
-interface Interface {
+export interface Interface {
   username?: string;
   description?: string;
   duration?: string;

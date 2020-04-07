@@ -73,7 +73,13 @@ class ExerciseController {
 
   public async updateExercise(req: Request, res: Response): Promise<Response> {
     try {
-      await Exercise.findById(req.params.id);
+      await Exercise.findById(req.params.id).then(exercise => {
+        exercise!.username = req.body.username;
+        exercise!.description = req.body.description;
+        exercise!.duration = req.body.duration;
+        exercise!.date = req.body.date;
+        exercise!.save();
+      });
       return res.status(200).json({
         success: true,
         data: {
