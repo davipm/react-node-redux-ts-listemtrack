@@ -48,12 +48,18 @@ function CreateUser() {
         autoComplete="off"
         onSubmit={onSubmit}
       >
-        <TextField id="standard-basic" label="Username" />
+        <TextField
+          id="standard-basic"
+          label="Username"
+          value={username}
+          onChange={(event) => setUsername(event.target.value)}
+        />
 
         <Button
           className={classes.button}
           variant="contained"
           color="primary"
+          type="submit"
           startIcon={<SaveIcon />}
         >
           Save user
