@@ -1,5 +1,8 @@
-import React from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Switch, Route } from "react-router-dom";
+import { useDispatch } from "react-redux";
+
+import { init } from "./store/actions";
 import Container from "@material-ui/core/Container";
 
 import Header from "./components/Header";
@@ -9,8 +12,14 @@ import ExerciseCreate from "./components/ExerciseCreate";
 import ExerciseEdit from "./components/ExerciseEdit";
 
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(init());
+  }, []);
+
   return (
-    <Router>
+    <>
       <Header />
       <Container>
         <Switch>
@@ -20,7 +29,7 @@ function App() {
           <Route path="/exercise/update/:id" children={<ExerciseEdit />} />
         </Switch>
       </Container>
-    </Router>
+    </>
   );
 }
 

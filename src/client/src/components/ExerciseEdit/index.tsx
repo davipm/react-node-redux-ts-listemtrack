@@ -1,5 +1,8 @@
 import React, { useEffect, useState, useReducer } from "react";
 import { useHistory, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUpdatedExercises, updateExercises } from "../../store/actions";
+
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
@@ -14,7 +17,7 @@ import {
   KeyboardDatePicker,
 } from "@material-ui/pickers";
 import Alert from "@material-ui/lab/Alert";
-import ClearIcon from '@material-ui/icons/Clear';
+import ClearIcon from "@material-ui/icons/Clear";
 import api from "../../services/api";
 import { IUser, Interface } from "../ExerciseCreate";
 
@@ -32,8 +35,8 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-
 function ExerciseEdit() {
+  const dispatch = useDispatch();
   const { id } = useParams();
   const classes = useStyles();
   let history = useHistory();
@@ -81,28 +84,36 @@ function ExerciseEdit() {
     getExercise();
   }, []);
 
-  const onHandleChange = (event: { target: { name?: string | undefined; value: any; }; }): void => {
+  const onHandleChange = (event: {
+    target: { name?: string | undefined; value: any };
+  }): void => {
     const { name, value } = event.target;
     setUserInput({ [name!]: value });
   };
 
-  const onSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
+  const onSubmit = async (
+    event: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
     event.preventDefault();
-    if (!userInput.description || !userInput.username || !userInput.duration) {
+    if (!userInput) {
       setError(true);
       return;
     }
     setError(false);
-    await api.put(`/exercise/edit/${id}`, userInput);
+
+    dispatch(fetchUpdatedExercises(id!, userInput));
+
     history.push("/");
   };
 
   const onReset = () => {
-    setUserInput({ username: "",
+    setUserInput({
+      username: "",
       description: "",
       duration: "",
-      date: selectedDate, });
-  }
+      date: selectedDate,
+    });
+  };
 
   return (
     <section>
@@ -192,7 +203,7 @@ function ExerciseEdit() {
           onClick={onReset}
           startIcon={<ClearIcon />}
         >
-          Reset
+          Reset All
         </Button>
         {error && <Alert severity="error">You have complete all fields</Alert>}
       </form>

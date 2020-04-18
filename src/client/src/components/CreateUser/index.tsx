@@ -1,9 +1,12 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import SaveIcon from "@material-ui/icons/Save";
-import api from "../../services/api";
+
+import { fetchCreateNewUser } from "../../store/actions";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -22,19 +25,13 @@ const useStyles = makeStyles((theme: Theme) =>
 function CreateUser() {
   const classes = useStyles();
   const [username, setUsername] = useState<string>("");
+  const dispatch = useDispatch();
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!username) return;
-    const user = {
-      username,
-    };
 
-    try {
-      await api.post("/users", user);
-    } catch (error) {
-      console.log(error);
-    }
+    dispatch(fetchCreateNewUser(username));
 
     setUsername("");
   }
@@ -51,6 +48,7 @@ function CreateUser() {
         <TextField
           id="standard-basic"
           label="Username"
+          required
           value={username}
           onChange={(event) => setUsername(event.target.value)}
         />

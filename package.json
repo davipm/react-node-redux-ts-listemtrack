@@ -2,12 +2,13 @@
   "name": "exercise-api",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/server.ts",
   "scripts": {
     "dev": "nodemon src/server.ts",
-    "build": "sucrase ./src -d ./dist --transforms typescript,imports",
+    "build": "tsc --outDir dist",
+    "start": "tsc --outDir dist && node dist/server.js",
     "client": "npm start --prefix ./src/client",
-    "start": "concurrently \"npm run dev\" \"npm run client\""
+    "server": "concurrently \"npm run dev\" \"npm run client\""
   },
   "keywords": [],
   "author": "Davi Pereira",

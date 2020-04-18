@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Exercise Track List",
+  "name": "This is a simple app for listing exercising",
   "icons": [
     {
       "src": "favicon.ico",

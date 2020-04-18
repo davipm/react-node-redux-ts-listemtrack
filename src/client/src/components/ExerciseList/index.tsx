@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchDeleteExercises } from "../../store/actions";
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -7,7 +9,7 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import api from "../../services/api";
+
 import ExerciseItem from "./ExerciseItem";
 
 const useStyles = makeStyles({
@@ -27,24 +29,21 @@ export interface IExercise {
 
 function ExerciseList() {
   const classes = useStyles();
-  const [exercise, setExercise] = useState<IExercise[]>([]);
+  const dispatch = useDispatch();
+  const exercise = useSelector((state: any) => state.exercises);
 
-  useEffect(() => {
-    const getExercise = async () => {
-      try {
-        const response = await api.get("/exercise");
-        setExercise(response.data.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+  exercise.sort((a: any, b: any) => {
+    let nameA = a._id;
+    let nameB = b._id;
 
-    getExercise();
-  }, []);
+    if (nameA < nameB) return -1;
+    if (nameA > nameB) return 1;
 
-  const deleteExercise = async (id: string) => {
-    await api.delete(`/exercise/${id}`);
-    setExercise(exercise.filter(({ _id }) => _id !== id));
+    return 0;
+  });
+
+  const deleteExercise = async (id: number) => {
+    dispatch(fetchDeleteExercises(id));
   };
 
   return (
@@ -62,7 +61,7 @@ function ExerciseList() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {exercise.map((item) => (
+            {exercise.map((item: any) => (
               <ExerciseItem
                 key={item._id}
                 deleteExercise={deleteExercise}
