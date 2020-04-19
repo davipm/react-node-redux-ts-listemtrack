@@ -71,7 +71,7 @@ export const fetchUpdatedExercises = (id: string, exercise: any) => async (
   dispatch: any
 ) => {
   try {
-    await api.put(`/exercise/edit/${id}`, exercise);
+    await api.patch(`/exercise/edit/${id}`, exercise);
     dispatch(updateExercises(id, exercise));
     dispatch(orderStateExercise());
   } catch (error) {

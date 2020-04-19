@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useReducer } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUpdatedExercises, updateExercises } from "../../store/actions";
+import { fetchUpdatedExercises } from "../../store/actions";
 
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
@@ -19,7 +19,8 @@ import {
 import Alert from "@material-ui/lab/Alert";
 import ClearIcon from "@material-ui/icons/Clear";
 import api from "../../services/api";
-import { IUser, Interface } from "../ExerciseCreate";
+
+import { useHandleForm } from "../../hooks/useHandleForm";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -36,28 +37,25 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 function ExerciseEdit() {
-  const dispatch = useDispatch();
-  const { id } = useParams();
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const users: any = useSelector((state: any) => state.users);
+  const { id } = useParams();
   let history = useHistory();
+
+  const {
+    userInput,
+    setUserInput,
+    setSelectedDate,
+    selectedDate,
+    onReset,
+  } = useHandleForm();
+
   const [error, setError] = useState(false);
-  const [users, setUsers] = useState<IUser[]>([]);
-  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+
   const handleDateChange = (date: Date | null) => {
     setSelectedDate(date);
   };
-  const [userInput, setUserInput] = useReducer(
-    (state: Interface, newState: Interface) => ({
-      ...state,
-      ...newState,
-    }),
-    {
-      username: "",
-      description: "",
-      duration: "",
-      date: selectedDate,
-    }
-  );
 
   useEffect(() => {
     const getExercise = async () => {
@@ -69,18 +67,6 @@ function ExerciseEdit() {
       }
     };
 
-    const getUser = async () => {
-      try {
-        const response = await api.get("/users");
-        if (response.data.count >= 0) {
-          setUsers(response.data.data.map((user: IUser) => user.username));
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    getUser();
     getExercise();
   }, []);
 
@@ -106,18 +92,10 @@ function ExerciseEdit() {
     history.push("/");
   };
 
-  const onReset = () => {
-    setUserInput({
-      username: "",
-      description: "",
-      duration: "",
-      date: selectedDate,
-    });
-  };
-
   return (
     <section>
       <h2>Edit Exercise</h2>
+
       <form
         noValidate
         autoComplete="off"
@@ -134,9 +112,9 @@ function ExerciseEdit() {
             onChange={onHandleChange}
             value={userInput.username}
           >
-            {users.sort().map((user, index) => (
-              <MenuItem key={index} value={`${user}`}>
-                {user}
+            {users.sort().map((user: any, index: number) => (
+              <MenuItem key={index} value={`${user.username}`}>
+                {user.username}
               </MenuItem>
             ))}
           </Select>

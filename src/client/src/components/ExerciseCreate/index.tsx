@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useReducer } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
@@ -14,8 +14,10 @@ import {
   KeyboardDatePicker,
 } from "@material-ui/pickers";
 import Alert from "@material-ui/lab/Alert";
-import ClearIcon from '@material-ui/icons/Clear';
+import ClearIcon from "@material-ui/icons/Clear";
 import api from "../../services/api";
+
+import { useHandleForm } from "../../hooks/useHandleForm";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -45,24 +47,21 @@ export interface Interface {
 function ExerciseCreate() {
   const classes = useStyles();
   let history = useHistory();
+
+  const {
+    userInput,
+    setUserInput,
+    setSelectedDate,
+    selectedDate,
+    onReset,
+  } = useHandleForm();
+
   const [error, setError] = useState(false);
   const [users, setUsers] = useState<IUser[]>([]);
-  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+
   const handleDateChange = (date: Date | null) => {
     setSelectedDate(date);
   };
-  const [userInput, setUserInput] = useReducer(
-    (state: Interface, newState: Interface) => ({
-      ...state,
-      ...newState,
-    }),
-    {
-      username: "",
-      description: "",
-      duration: "",
-      date: selectedDate,
-    }
-  );
 
   useEffect(() => {
     const getUser = async () => {
@@ -79,12 +78,16 @@ function ExerciseCreate() {
     getUser();
   }, []);
 
-  const onHandleChange = (event: { target: { name?: string | undefined; value: any; }; }): void => {
+  const onHandleChange = (event: {
+    target: { name?: string | undefined; value: any };
+  }): void => {
     const { name, value } = event.target;
     setUserInput({ [name!]: value });
   };
 
-  const onSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
+  const onSubmit = async (
+    event: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
     event.preventDefault();
     if (!userInput.description || !userInput.username || !userInput.duration) {
       setError(true);
@@ -94,13 +97,6 @@ function ExerciseCreate() {
     await api.post("/exercise", userInput);
     history.push("/");
   };
-
-  const onReset = () => {
-    setUserInput({ username: "",
-      description: "",
-      duration: "",
-      date: selectedDate, });
-  }
 
   return (
     <section>

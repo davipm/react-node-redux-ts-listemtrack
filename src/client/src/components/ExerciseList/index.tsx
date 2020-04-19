@@ -32,7 +32,7 @@ function ExerciseList() {
   const dispatch = useDispatch();
   const exercise = useSelector((state: any) => state.exercises);
 
-  exercise.sort((a: any, b: any) => {
+  exercise.sort((a: IExercise, b: IExercise) => {
     let nameA = a._id;
     let nameB = b._id;
 
