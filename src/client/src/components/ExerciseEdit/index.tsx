@@ -18,7 +18,6 @@ import {
 } from "@material-ui/pickers";
 import Alert from "@material-ui/lab/Alert";
 import ClearIcon from "@material-ui/icons/Clear";
-import api from "../../services/api";
 
 import { useHandleForm } from "../../hooks/useHandleForm";
 
@@ -36,55 +35,53 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+export interface IFormChange {
+  target: {
+    name?: string | undefined;
+    value: any;
+  };
+}
+
+export type Submit = React.FormEvent<HTMLFormElement>;
+
 function ExerciseEdit() {
   const classes = useStyles();
   const dispatch = useDispatch();
   const users: any = useSelector((state: any) => state.users);
+  const test: any = useSelector((state: any) => state.exercises);
   const { id } = useParams();
   let history = useHistory();
+
+  test.find((item: any) => item._id === id);
 
   const {
     userInput,
     setUserInput,
-    setSelectedDate,
     selectedDate,
     onReset,
+    handleDateChange,
   } = useHandleForm();
 
   const [error, setError] = useState(false);
 
-  const handleDateChange = (date: Date | null) => {
-    setSelectedDate(date);
-  };
-
   useEffect(() => {
-    const getExercise = async () => {
-      try {
-        const response = await api.get(`/exercise/${id}`);
-        setUserInput({ ...response.data.data });
-      } catch (error) {
-        console.log(error);
-      }
-    };
+    if (test) {
+      setUserInput(test.find((item: { _id: string }) => item._id === id));
+    }
+  }, [test]);
 
-    getExercise();
-  }, []);
-
-  const onHandleChange = (event: {
-    target: { name?: string | undefined; value: any };
-  }): void => {
+  const onHandleChange = (event: IFormChange): void => {
     const { name, value } = event.target;
     setUserInput({ [name!]: value });
   };
 
-  const onSubmit = async (
-    event: React.FormEvent<HTMLFormElement>
-  ): Promise<void> => {
+  const onSubmit = async (event: Submit) => {
     event.preventDefault();
     if (!userInput) {
       setError(true);
       return;
     }
+
     setError(false);
 
     dispatch(fetchUpdatedExercises(id!, userInput));
@@ -112,8 +109,8 @@ function ExerciseEdit() {
             onChange={onHandleChange}
             value={userInput.username}
           >
-            {users.sort().map((user: any, index: number) => (
-              <MenuItem key={index} value={`${user.username}`}>
+            {users.sort().map((user: any) => (
+              <MenuItem key={user._id} value={`${user.username}`}>
                 {user.username}
               </MenuItem>
             ))}

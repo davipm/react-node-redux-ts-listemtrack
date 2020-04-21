@@ -16,6 +16,10 @@ export function useHandleForm() {
     }
   );
 
+  const handleDateChange = (date: Date | null) => {
+    setSelectedDate(date);
+  };
+
   const onReset = () => {
     setUserInput({
       username: "",
@@ -25,5 +29,11 @@ export function useHandleForm() {
     });
   };
 
-  return { userInput, setUserInput, setSelectedDate, selectedDate, onReset };
+  return {
+    userInput,
+    setUserInput,
+    selectedDate,
+    onReset,
+    handleDateChange,
+  };
 }

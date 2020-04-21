@@ -15,6 +15,8 @@ body {
   font-style: normal;
   color: black;
   background-color: #fff;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
 }
 
 p {
@@ -25,4 +27,22 @@ p {
 
 .mr-2 {
   margin-right: 1rem!important;
+}
+
+.exercise-enter {
+  opacity: 0;
+}
+
+.exercise-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+
+.exercise-exit {
+  opacity: 1;
+}
+
+.exercise-exit-active {
+  opacity: 0;
+  transition: opacity 500ms ease-in;
 }

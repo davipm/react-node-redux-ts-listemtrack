@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
@@ -15,9 +16,10 @@ import {
 } from "@material-ui/pickers";
 import Alert from "@material-ui/lab/Alert";
 import ClearIcon from "@material-ui/icons/Clear";
-import api from "../../services/api";
 
+import { fetchNewExercises } from "../../store/actions";
 import { useHandleForm } from "../../hooks/useHandleForm";
+import { IFormChange, Submit } from "../ExerciseEdit";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -34,7 +36,8 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export interface IUser {
-  username: string;
+  username?: string;
+  _id?: string;
 }
 
 export interface Interface {
@@ -47,54 +50,34 @@ export interface Interface {
 function ExerciseCreate() {
   const classes = useStyles();
   let history = useHistory();
+  const dispatch = useDispatch();
+  const users: any = useSelector((state: any) => state.users);
 
   const {
     userInput,
     setUserInput,
-    setSelectedDate,
     selectedDate,
     onReset,
+    handleDateChange,
   } = useHandleForm();
 
   const [error, setError] = useState(false);
-  const [users, setUsers] = useState<IUser[]>([]);
 
-  const handleDateChange = (date: Date | null) => {
-    setSelectedDate(date);
-  };
-
-  useEffect(() => {
-    const getUser = async () => {
-      try {
-        const response = await api.get("/users");
-        if (response.data.count >= 0) {
-          setUsers(response.data.data.map((user: IUser) => user.username));
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    getUser();
-  }, []);
-
-  const onHandleChange = (event: {
-    target: { name?: string | undefined; value: any };
-  }): void => {
+  const onHandleChange = (event: IFormChange): void => {
     const { name, value } = event.target;
     setUserInput({ [name!]: value });
   };
 
-  const onSubmit = async (
-    event: React.FormEvent<HTMLFormElement>
-  ): Promise<void> => {
+  const onSubmit = async (event: Submit): Promise<void> => {
     event.preventDefault();
-    if (!userInput.description || !userInput.username || !userInput.duration) {
+    if (!userInput) {
       setError(true);
       return;
     }
     setError(false);
-    await api.post("/exercise", userInput);
+
+    dispatch(fetchNewExercises(userInput));
+
     history.push("/");
   };
 
@@ -117,9 +100,9 @@ function ExerciseCreate() {
             onChange={onHandleChange}
             value={userInput.username}
           >
-            {users.sort().map((user, index) => (
-              <MenuItem key={index} value={`${user}`}>
-                {user}
+            {users.sort().map((user: IUser) => (
+              <MenuItem key={user._id} value={`${user.username}`}>
+                {user.username}
               </MenuItem>
             ))}
           </Select>

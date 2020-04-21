@@ -10,10 +10,16 @@ import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import rootReducers from "./store/reducers";
 
-const store = createStore(
-  rootReducers,
-  composeWithDevTools(applyMiddleware(thunk))
-);
+let store;
+
+if (process.env.NODE_ENV !== "production") {
+  store = createStore(
+    rootReducers,
+    composeWithDevTools(applyMiddleware(thunk))
+  );
+} else {
+  store = createStore(rootReducers, applyMiddleware(thunk));
+}
 
 ReactDOM.render(
   <React.StrictMode>

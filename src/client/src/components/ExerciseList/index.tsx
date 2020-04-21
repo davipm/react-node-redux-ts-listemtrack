@@ -1,6 +1,7 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchDeleteExercises } from "../../store/actions";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
+
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -10,6 +11,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 
+import { fetchDeleteExercises } from "../../store/actions";
 import ExerciseItem from "./ExerciseItem";
 
 const useStyles = makeStyles({
@@ -61,13 +63,17 @@ function ExerciseList() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {exercise.map((item: any) => (
-              <ExerciseItem
-                key={item._id}
-                deleteExercise={deleteExercise}
-                {...item}
-              />
-            ))}
+            <TransitionGroup className="exercises" component={null}>
+              {exercise.map((item: any) => (
+                <CSSTransition
+                  key={item._id}
+                  timeout={500}
+                  classNames="exercise"
+                >
+                  <ExerciseItem deleteExercise={deleteExercise} {...item} />
+                </CSSTransition>
+              ))}
+            </TransitionGroup>
           </TableBody>
         </Table>
       </TableContainer>

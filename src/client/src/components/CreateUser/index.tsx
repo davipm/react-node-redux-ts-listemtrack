@@ -22,12 +22,14 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+export type Submit = React.FormEvent<HTMLFormElement>;
+
 function CreateUser() {
   const classes = useStyles();
   const [username, setUsername] = useState<string>("");
   const dispatch = useDispatch();
 
-  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function onSubmit(event: Submit) {
     event.preventDefault();
     if (!username) return;
 
