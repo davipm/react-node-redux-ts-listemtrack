@@ -118,4 +118,3 @@ dist
 .idea
 /src/client/build
 /src/client/node_modules
-/src/config/config.env

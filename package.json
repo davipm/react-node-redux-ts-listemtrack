@@ -4,11 +4,11 @@
   "description": "",
   "main": "src/server.ts",
   "scripts": {
-    "dev": "nodemon src/server.ts",
-    "build": "tsc --outDir dist && npm run build --prefix ./src/client",
-    "start": "tsc --outDir dist && node dist/server.js",
+    "start": "tsc && node dist/server.js",
+    "build": "tsc",
     "client": "npm start --prefix ./src/client",
-    "server": "concurrently \"npm run dev\" \"npm run client\""
+    "backend": "ts-node ./src/server.ts",
+    "dev": "concurrently \"npm run dev\" \"npm run client\""
   },
   "keywords": [],
   "author": "Davi Pereira",
